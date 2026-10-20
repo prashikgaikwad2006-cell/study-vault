@@ -8,8 +8,22 @@ from database import get_db, DB_PATH, init_db
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'studyvault-super-secret-key-cs-dept-2026'
 
-UPLOADS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
-os.makedirs(UPLOADS_DIR, exist_ok=True)
+if os.environ.get('VERCEL'):
+    UPLOADS_DIR = '/tmp/uploads'
+    bundled_uploads = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
+    if not os.path.exists(UPLOADS_DIR):
+        try:
+            if os.path.exists(bundled_uploads):
+                import shutil
+                shutil.copytree(bundled_uploads, UPLOADS_DIR)
+            else:
+                os.makedirs(UPLOADS_DIR, exist_ok=True)
+        except Exception:
+            os.makedirs(UPLOADS_DIR, exist_ok=True)
+else:
+    UPLOADS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
+    os.makedirs(UPLOADS_DIR, exist_ok=True)
+
 app.config['UPLOAD_FOLDER'] = UPLOADS_DIR
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB limit as per requirements
 

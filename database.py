@@ -1,9 +1,20 @@
 import sqlite3
 import os
+import shutil
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'studyvault.db')
+if os.environ.get('VERCEL'):
+    DB_PATH = '/tmp/studyvault.db'
+    bundled_db = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'studyvault.db')
+    if not os.path.exists(DB_PATH) and os.path.exists(bundled_db):
+        try:
+            shutil.copyfile(bundled_db, DB_PATH)
+        except Exception:
+            pass
+else:
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'studyvault.db')
+
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
