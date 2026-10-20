@@ -61,19 +61,19 @@
 
             <!-- Right Controls -->
             <div class="header-actions">
-                <!-- Quick Role Switcher Pill -->
-                <div class="role-switcher-pill" id="roleSwitcherPill" title="Quick toggle between Admin and Student role">
-                    <button class="role-btn active" id="studentModeBtn" data-role="student">
-                        <span class="role-icon">🎓</span>
-                        <span>Student</span>
-                    </button>
-                    <button class="role-btn" id="adminModeBtn" data-role="admin">
-                        <span class="role-icon">⚡</span>
-                        <span>Admin</span>
-                    </button>
+                <!-- User Role Indicator -->
+                <div class="role-indicator-badge" id="roleIndicatorBadge">
+                    <span class="role-icon" id="roleBadgeIcon">🎓</span>
+                    <span id="roleBadgeText">Student Portal</span>
                 </div>
 
-                <!-- Admin Action Button (Visible when admin) -->
+                <!-- Admin Sign In Button (Shown when student or guest) -->
+                <button class="btn btn-outline btn-sm" id="adminLoginBtn" title="Faculty & Administrator Sign In">
+                    <span class="role-icon">⚡</span>
+                    <span>Admin Login</span>
+                </button>
+
+                <!-- Admin Action Button (Only visible when authenticated as admin) -->
                 <button class="btn btn-primary btn-sm admin-only-btn" id="openAdminPanelBtn" style="display: none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
                         <circle cx="12" cy="12" r="3"></circle>
@@ -177,13 +177,21 @@
                         </svg>
                         <span>Explore Materials</span>
                     </button>
-                    <button class="btn btn-outline btn-lg" id="heroUploadBtn">
+                    <!-- Admin Only Upload Button -->
+                    <button class="btn btn-outline btn-lg" id="heroUploadBtn" style="display: none;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
                         <span>Upload Notes (Admin)</span>
+                    </button>
+                    <!-- Student Saved Bookmarks Shortcut -->
+                    <button class="btn btn-outline btn-lg" id="heroSavedNotesBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <span>My Saved Notes</span>
                     </button>
                     <button class="btn btn-glass btn-lg" id="viewPyqBtn">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
@@ -830,11 +838,11 @@
                         <input type="password" id="regPassword" class="form-input" placeholder="••••••••" minlength="6" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="regRole">Role</label>
-                        <select id="regRole" class="form-input">
-                            <option value="student">Student</option>
-                            <option value="admin">Faculty / Administrator</option>
-                        </select>
+                        <label class="form-label">Account Role</label>
+                        <div class="role-badge-static">🎓 Student Account</div>
+                        <div class="reg-note" style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">
+                            Note: Faculty &amp; Admin accounts with material upload privileges are provisioned by the Department of Computer Science.
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Complete Registration</button>
                 </form>

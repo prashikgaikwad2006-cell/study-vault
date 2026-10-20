@@ -104,9 +104,8 @@ def api_register():
     full_name = data.get('full_name', '').strip()
     email = data.get('email', '').strip().lower()
     password = data.get('password', '')
-    role = data.get('role', 'student').lower()
-    if role not in ['student', 'admin']:
-        role = 'student'
+    # Public registration is strictly for students; admin accounts are reserved
+    role = 'student'
 
     if not full_name or not email or not password:
         return jsonify({'error': 'All fields are required.'}), 400
@@ -140,26 +139,11 @@ def api_register():
         conn.close()
         return jsonify({'error': 'An account with this email already exists.'}), 409
 
-@app.route('/api/auth/quick-switch', methods=['POST'])
-def api_quick_switch():
-    """Allows instant switching between Admin and Student demo roles for easy testing."""
-    data = request.get_json() or {}
-    target_role = data.get('role', 'admin').lower()
-    
-    conn = get_db()
-    user = conn.execute("SELECT user_id, full_name, email, role FROM users WHERE role = ? ORDER BY user_id ASC LIMIT 1", (target_role,)).fetchone()
-    conn.close()
-
-    if user:
-        session['user_id'] = user['user_id']
-        session['role'] = user['role']
-        return jsonify({'message': f'Switched to {user["role"].capitalize()} Mode', 'user': dict(user)})
-    return jsonify({'error': f'No default {target_role} found.'}), 404
-
 @app.route('/api/auth/logout', methods=['POST'])
 def api_logout():
     session.clear()
     return jsonify({'message': 'Logged out successfully.'})
+
 
 # ==================== COURSES APIS ====================
 @app.route('/api/courses', methods=['GET'])

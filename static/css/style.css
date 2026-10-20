@@ -337,36 +337,39 @@ body {
     gap: 0.85rem;
 }
 
-/* Role Switcher Pill */
-.role-switcher-pill {
-    display: flex;
+/* Role Indicator Badge */
+.role-indicator-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border-medium);
     border-radius: var(--radius-full);
-    padding: 3px;
-    gap: 2px;
-}
-
-.role-btn {
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    padding: 0.35rem 0.8rem;
-    border-radius: var(--radius-full);
+    padding: 0.4rem 0.85rem;
     font-size: 0.82rem;
     font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    transition: var(--transition);
+    color: var(--text-secondary);
 }
 
-.role-btn.active {
-    background: var(--primary);
-    color: #FFFFFF;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+.role-indicator-badge.admin-active {
+    background: var(--amber-light);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: var(--amber);
 }
+
+.role-badge-static {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    background: var(--primary-light);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
 
 /* Theme Toggle Button */
 .theme-toggle-btn {

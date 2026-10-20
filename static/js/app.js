@@ -27,9 +27,10 @@ const DOM = {
     themeToggleBtn: document.getElementById('themeToggleBtn'),
     globalSearchInput: document.getElementById('globalSearchInput'),
     clearSearchBtn: document.getElementById('clearSearchBtn'),
-    roleSwitcherPill: document.getElementById('roleSwitcherPill'),
-    studentModeBtn: document.getElementById('studentModeBtn'),
-    adminModeBtn: document.getElementById('adminModeBtn'),
+    roleIndicatorBadge: document.getElementById('roleIndicatorBadge'),
+    roleBadgeIcon: document.getElementById('roleBadgeIcon'),
+    roleBadgeText: document.getElementById('roleBadgeText'),
+    adminLoginBtn: document.getElementById('adminLoginBtn'),
     openAdminPanelBtn: document.getElementById('openAdminPanelBtn'),
     userProfileBtn: document.getElementById('userProfileBtn'),
     userDropdown: document.getElementById('userDropdown'),
@@ -50,6 +51,7 @@ const DOM = {
     statDownloads: document.getElementById('statDownloads'),
     browseNowBtn: document.getElementById('browseNowBtn'),
     heroUploadBtn: document.getElementById('heroUploadBtn'),
+    heroSavedNotesBtn: document.getElementById('heroSavedNotesBtn'),
     viewPyqBtn: document.getElementById('viewPyqBtn'),
 
     // Filter controls
@@ -201,14 +203,22 @@ function updateUserUI() {
 
         if (state.user.role === 'admin') {
             DOM.openAdminPanelBtn.style.display = 'inline-flex';
-            DOM.adminModeBtn.classList.add('active');
-            DOM.studentModeBtn.classList.remove('active');
+            if (DOM.heroUploadBtn) DOM.heroUploadBtn.style.display = 'inline-flex';
+            if (DOM.heroSavedNotesBtn) DOM.heroSavedNotesBtn.style.display = 'none';
+            if (DOM.adminLoginBtn) DOM.adminLoginBtn.style.display = 'none';
+            if (DOM.roleBadgeIcon) DOM.roleBadgeIcon.textContent = '⚡';
+            if (DOM.roleBadgeText) DOM.roleBadgeText.textContent = 'Faculty Admin';
+            if (DOM.roleIndicatorBadge) DOM.roleIndicatorBadge.classList.add('admin-active');
             DOM.dropdownUserRole.style.color = '#F59E0B';
             DOM.dropdownUserRole.style.background = 'rgba(245, 158, 11, 0.15)';
         } else {
             DOM.openAdminPanelBtn.style.display = 'none';
-            DOM.studentModeBtn.classList.add('active');
-            DOM.adminModeBtn.classList.remove('active');
+            if (DOM.heroUploadBtn) DOM.heroUploadBtn.style.display = 'none';
+            if (DOM.heroSavedNotesBtn) DOM.heroSavedNotesBtn.style.display = 'inline-flex';
+            if (DOM.adminLoginBtn) DOM.adminLoginBtn.style.display = 'inline-flex';
+            if (DOM.roleBadgeIcon) DOM.roleBadgeIcon.textContent = '🎓';
+            if (DOM.roleBadgeText) DOM.roleBadgeText.textContent = 'Student Portal';
+            if (DOM.roleIndicatorBadge) DOM.roleIndicatorBadge.classList.remove('admin-active');
             DOM.dropdownUserRole.style.color = '#6366F1';
             DOM.dropdownUserRole.style.background = 'rgba(99, 102, 241, 0.15)';
         }
@@ -220,28 +230,12 @@ function updateUserUI() {
         DOM.userProfileBtn.style.display = 'none';
         DOM.openAuthModalBtn.style.display = 'inline-flex';
         DOM.openAdminPanelBtn.style.display = 'none';
-    }
-}
-
-async function quickSwitchRole(role) {
-    try {
-        const res = await fetch('/api/auth/quick-switch', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ role })
-        });
-        const data = await res.json();
-        if (res.ok) {
-            state.user = data.user;
-            updateUserUI();
-            showToast(`Switched to ${data.user.role.toUpperCase()} mode!`, 'success');
-            await fetchMaterials();
-            await loadStats();
-        } else {
-            showToast(data.error || 'Failed to switch role', 'error');
-        }
-    } catch (e) {
-        showToast('Error switching role', 'error');
+        if (DOM.heroUploadBtn) DOM.heroUploadBtn.style.display = 'none';
+        if (DOM.heroSavedNotesBtn) DOM.heroSavedNotesBtn.style.display = 'inline-flex';
+        if (DOM.adminLoginBtn) DOM.adminLoginBtn.style.display = 'inline-flex';
+        if (DOM.roleBadgeIcon) DOM.roleBadgeIcon.textContent = '🎓';
+        if (DOM.roleBadgeText) DOM.roleBadgeText.textContent = 'Student Portal';
+        if (DOM.roleIndicatorBadge) DOM.roleIndicatorBadge.classList.remove('admin-active');
     }
 }
 
@@ -689,11 +683,10 @@ async function toggleBookmark(materialId, btnElement) {
     }
 }
 
-// ==================== ADMIN CONSOLE & CRUD ====================
 function openAdminModal() {
     if (!state.user || state.user.role !== 'admin') {
-        showToast('Faculty or Administrator access required.', 'error');
-        quickSwitchRole('admin');
+        showToast('Access Denied: Study material upload is restricted to Faculty / Admins.', 'error');
+        openAuthModal('admin-login');
         return;
     }
     DOM.adminModal.classList.add('show');
@@ -783,7 +776,15 @@ function renderSubjectsManageList() {
 // ==================== AUTH MODAL ====================
 function openAuthModal(tab = 'login') {
     DOM.authModal.classList.add('show');
-    switchAuthTab(tab);
+    if (tab === 'admin-login') {
+        switchAuthTab('login');
+        document.getElementById('authModalTitle').textContent = 'Faculty & Admin Sign In';
+        document.getElementById('loginEmail').value = 'admin@studyvault.ac.in';
+        document.getElementById('loginPassword').value = '';
+        setTimeout(() => document.getElementById('loginPassword').focus(), 150);
+    } else {
+        switchAuthTab(tab);
+    }
 }
 
 function closeAuthModal() {
@@ -844,19 +845,32 @@ function setupEventListeners() {
         }
     });
 
-    // Quick role toggle pill
-    DOM.studentModeBtn.addEventListener('click', () => quickSwitchRole('student'));
-    DOM.adminModeBtn.addEventListener('click', () => quickSwitchRole('admin'));
+    // Admin Login button in header
+    if (DOM.adminLoginBtn) {
+        DOM.adminLoginBtn.addEventListener('click', () => openAuthModal('admin-login'));
+    }
 
-    // Admin console triggers
+    // Admin console triggers (Strictly protected)
     DOM.openAdminPanelBtn.addEventListener('click', openAdminModal);
-    DOM.heroUploadBtn.addEventListener('click', () => {
-        if (!state.user || state.user.role !== 'admin') {
-            quickSwitchRole('admin').then(openAdminModal);
-        } else {
-            openAdminModal();
-        }
-    });
+    if (DOM.heroUploadBtn) {
+        DOM.heroUploadBtn.addEventListener('click', () => {
+            if (!state.user || state.user.role !== 'admin') {
+                showToast('Access Denied: Only Administrator accounts can upload study materials.', 'error');
+                openAuthModal('admin-login');
+            } else {
+                openAdminModal();
+            }
+        });
+    }
+
+    if (DOM.heroSavedNotesBtn) {
+        DOM.heroSavedNotesBtn.addEventListener('click', () => {
+            state.activeFilters.bookmarksOnly = true;
+            fetchMaterials();
+            showToast('Showing your saved bookmarks', 'info');
+            document.getElementById('materialsBrowseSection').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 
     // Browse button scroll
     DOM.browseNowBtn.addEventListener('click', () => {
@@ -964,7 +978,7 @@ function setupEventListeners() {
         const full_name = document.getElementById('regFullName').value;
         const email = document.getElementById('regEmail').value;
         const password = document.getElementById('regPassword').value;
-        const role = document.getElementById('regRole').value;
+        const role = 'student';
 
         try {
             const res = await fetch('/api/auth/register', {
