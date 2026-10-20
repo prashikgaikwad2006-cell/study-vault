@@ -12,6 +12,17 @@ UPLOADS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads'
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOADS_DIR
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32 MB limit as per requirements
+
+# Auto-bootstrap database and sample materials for cloud deployment
+if not os.path.exists(DB_PATH):
+    try:
+        from seed_data import seed_database
+        seed_database()
+    except Exception as e:
+        init_db()
+else:
+    init_db()
+
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'pptx', 'txt', 'zip', 'png', 'jpg'}
 
 def allowed_file(filename):
