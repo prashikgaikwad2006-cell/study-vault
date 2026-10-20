@@ -1,15 +1,17 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "app.py",
-      "use": "@vercel/python"
+      "source": "/(.*)",
+      "destination": {
+        "type": "service",
+        "service": "studyvault"
+      }
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "app.py"
+  "services": {
+    "studyvault": {
+      "root": ".",
+      "entrypoint": "app.py"
     }
-  ]
+  }
 }

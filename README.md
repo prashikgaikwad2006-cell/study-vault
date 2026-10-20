@@ -3,6 +3,8 @@
 > **T.Y. B.Sc. Computer Science Final Year Project**  
 > Built strictly adhering to the requirements, database schemas, and architectural designs specified in the project report.
 
+🌐 **Live 24/7 Production URL:** **[https://study-vault-psi-red.vercel.app](https://study-vault-psi-red.vercel.app)**
+
 ---
 
 ## 🌟 Overview & Problem Solved
