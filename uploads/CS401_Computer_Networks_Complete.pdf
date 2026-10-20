@@ -1,0 +1,64 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 928 >>
+stream
+BT
+/F1 18 Tf
+50 740 Td
+(Computer Networks: OSI 7-Layer & TCP/IP Model Full Notes) Tj
+0 -24 Td
+/F2 12 Tf
+(CS401 | StudyVault Academic Repository) Tj
+0 -18 Td
+(StudyVault Digital Study Material - Department of Computer Science) Tj
+0 -30 Td
+/F1 13 Tf
+(Key Concepts & Highlights:) Tj
+0 -20 Td
+/F2 10 Tf
+(\204 OSI Reference Model vs TCP/IP Protocol Suite mapping and protocol headers) Tj
+0 -16 Td
+(\204 Data Link Layer: Sliding Window protocols \(Go-Back-N, Selective Repeat\) and CRC checksum) Tj
+0 -16 Td
+(\204 Network Layer: IPv4 addressing, CIDR notation, Subnet masking, and IPv6 migration) Tj
+0 -16 Td
+(\204 Transport Layer: UDP vs TCP, TCP 3-Way Handshake, Flow Control, and Congestion Control) Tj
+0 -16 Td
+(\204 Application Layer: DNS resolution hierarchy, HTTP/1.1 vs HTTP/2 vs HTTP/3, SMTP, and SSH) Tj
+0 -16 Td
+0 -20 Td
+/F2 9 Tf
+(Generated automatically by StudyVault Academic Portal - Free Educational Distribution) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000257 00000 n 
+0000001236 00000 n 
+0000001311 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1381
+%%EOF
