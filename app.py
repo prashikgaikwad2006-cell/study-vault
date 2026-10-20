@@ -50,9 +50,17 @@ def format_size(bytes_num):
     return f"{bytes_num:.1f} GB"
 
 def get_current_user():
-    if 'user_id' in session:
+    user_id = session.get('user_id')
+    if not user_id:
+        auth_header = request.headers.get('Authorization')
+        if auth_header and auth_header.startswith('Bearer '):
+            try:
+                user_id = int(auth_header.split(' ')[1].strip())
+            except Exception:
+                pass
+    if user_id:
         conn = get_db()
-        user = conn.execute("SELECT user_id, full_name, email, role, created_at FROM users WHERE user_id = ?", (session['user_id'],)).fetchone()
+        user = conn.execute("SELECT user_id, full_name, email, role, created_at FROM users WHERE user_id = ?", (user_id,)).fetchone()
         conn.close()
         if user:
             return dict(user)

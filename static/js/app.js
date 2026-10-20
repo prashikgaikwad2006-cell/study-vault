@@ -121,6 +121,7 @@ const DOM = {
     tabShowRegister: document.getElementById('tabShowRegister'),
     loginForm: document.getElementById('loginForm'),
     registerForm: document.getElementById('registerForm'),
+    instantAdminLoginBtn: document.getElementById('instantAdminLoginBtn'),
     fillAdminDemo: document.getElementById('fillAdminDemo'),
     fillStudentDemo: document.getElementById('fillStudentDemo'),
     toastContainer: document.getElementById('toastContainer')
@@ -184,7 +185,11 @@ function showToast(message, type = 'info') {
 // ==================== AUTH & USER SESSIONS ====================
 async function checkCurrentUser() {
     try {
-        const res = await fetch('/api/auth/me');
+        const headers = {};
+        const savedUid = localStorage.getItem('studyvault_user_id');
+        if (savedUid) headers['Authorization'] = `Bearer ${savedUid}`;
+
+        const res = await fetch('/api/auth/me', { headers });
         const data = await res.json();
         state.user = data.user;
         updateUserUI();
@@ -899,6 +904,8 @@ function setupEventListeners() {
     DOM.logoutBtn.addEventListener('click', async () => {
         await fetch('/api/auth/logout', { method: 'POST' });
         state.user = null;
+        localStorage.removeItem('studyvault_user_id');
+        localStorage.removeItem('studyvault_user');
         updateUserUI();
         DOM.userDropdown.classList.remove('show');
         showToast('Signed out successfully.', 'info');
@@ -935,22 +942,8 @@ function setupEventListeners() {
     DOM.tabShowLogin.addEventListener('click', () => switchAuthTab('login'));
     DOM.tabShowRegister.addEventListener('click', () => switchAuthTab('register'));
 
-    // Fill demo credentials
-    DOM.fillAdminDemo.addEventListener('click', () => {
-        document.getElementById('loginEmail').value = 'admin@studyvault.ac.in';
-        document.getElementById('loginPassword').value = 'admin123';
-    });
-    DOM.fillStudentDemo.addEventListener('click', () => {
-        document.getElementById('loginEmail').value = 'aarav.cs@student.ac.in';
-        document.getElementById('loginPassword').value = 'student123';
-    });
-
-    // Login form submit
-    DOM.loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-
+    // Perform Login Function
+    async function performLogin(email, password) {
         try {
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -960,16 +953,44 @@ function setupEventListeners() {
             const data = await res.json();
             if (res.ok) {
                 state.user = data.user;
+                localStorage.setItem('studyvault_user_id', data.user.user_id);
+                localStorage.setItem('studyvault_user', JSON.stringify(data.user));
                 updateUserUI();
                 closeAuthModal();
                 showToast(`Welcome back, ${data.user.full_name}!`, 'success');
-                fetchMaterials();
+                await fetchMaterials();
+                if (data.user.role === 'admin') {
+                    setTimeout(() => openAdminModal(), 200);
+                }
             } else {
-                showToast(data.error || 'Login failed', 'error');
+                showToast(data.error || 'Login failed. Check email & password.', 'error');
             }
         } catch (err) {
             showToast('Network error during sign in', 'error');
         }
+    }
+
+    // Instant One-Click Admin Sign-In Button
+    if (DOM.instantAdminLoginBtn) {
+        DOM.instantAdminLoginBtn.addEventListener('click', () => {
+            performLogin('admin@studyvault.ac.in', 'admin123');
+        });
+    }
+
+    // Quick fill credentials triggers
+    DOM.fillAdminDemo.addEventListener('click', () => {
+        performLogin('admin@studyvault.ac.in', 'admin123');
+    });
+    DOM.fillStudentDemo.addEventListener('click', () => {
+        performLogin('aarav.cs@student.ac.in', 'student123');
+    });
+
+    // Login form submit
+    DOM.loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        await performLogin(email, password);
     });
 
     // Register form submit
@@ -989,6 +1010,8 @@ function setupEventListeners() {
             const data = await res.json();
             if (res.ok) {
                 state.user = data.user;
+                localStorage.setItem('studyvault_user_id', data.user.user_id);
+                localStorage.setItem('studyvault_user', JSON.stringify(data.user));
                 updateUserUI();
                 closeAuthModal();
                 showToast('Account registered successfully!', 'success');
@@ -1176,10 +1199,14 @@ function setupEventListeners() {
         submitBtn.innerHTML = '<div class="spinner" style="width:16px;height:16px;margin:0 6px 0 0;display:inline-block;"></div> Uploading...';
 
         const formData = new FormData(DOM.uploadMaterialForm);
+        const headers = {};
+        const uid = localStorage.getItem('studyvault_user_id');
+        if (uid) headers['Authorization'] = `Bearer ${uid}`;
 
         try {
             const res = await fetch('/api/materials', {
                 method: 'POST',
+                headers: headers,
                 body: formData
             });
             const data = await res.json();

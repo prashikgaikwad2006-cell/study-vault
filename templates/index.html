@@ -804,18 +804,36 @@
 
                 <!-- Login Form -->
                 <form id="loginForm" class="auth-form">
+                    <!-- Instant 1-Click Admin Button for effortless faculty sign-in -->
+                    <div class="quick-admin-login-box">
+                        <button type="button" class="btn btn-primary btn-block" id="instantAdminLoginBtn">
+                            <span class="role-icon">⚡</span>
+                            <span>1-Click Sign In as Admin</span>
+                        </button>
+                        <div class="quick-admin-hint">
+                            Faculty Admin: <strong>admin@studyvault.ac.in</strong> (Pass: <code>admin123</code>)
+                        </div>
+                    </div>
+
+                    <div class="auth-divider-line">
+                        <span>OR ENTER CREDENTIALS</span>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label" for="loginEmail">Academic Email</label>
-                        <input type="email" id="loginEmail" class="form-input" placeholder="student@student.ac.in" required>
+                        <input type="email" id="loginEmail" class="form-input" placeholder="admin@studyvault.ac.in" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <label class="form-label" for="loginPassword">Password</label>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">Default: <strong>admin123</strong></span>
+                        </div>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="Enter password (e.g. admin123)" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">Sign In to Portal</button>
+                    <button type="submit" class="btn btn-secondary btn-block" id="loginSubmitBtn">Sign In with Credentials</button>
 
                     <div class="demo-credentials-box">
-                        <span class="demo-label">⚡ 1-Click Demo Fill:</span>
+                        <span class="demo-label">Quick Fill Credentials:</span>
                         <div class="demo-btn-group">
                             <button type="button" class="btn btn-xs btn-outline" id="fillAdminDemo">Admin (Prof. Sharma)</button>
                             <button type="button" class="btn btn-xs btn-outline" id="fillStudentDemo">Student (Aarav)</button>
