@@ -3,7 +3,9 @@
 > **T.Y. B.Sc. Computer Science Final Year Project**  
 > Built strictly adhering to the requirements, database schemas, and architectural designs specified in the project report.
 
-🌐 **Live 24/7 Production URL:** **[https://study-vault-psi-red.vercel.app](https://study-vault-psi-red.vercel.app)**
+🌐 **Live 24/7 Production URL:** **[https://study-vault-psi-red.vercel.app](https://study-vault-psi-red.vercel.app)**  
+📖 **Official User & Use Case Guide (Markdown):** **[USER_GUIDE.md](./USER_GUIDE.md)**  
+📑 **Official User & Use Case Guide (PDF Download):** **[StudyVault_User_and_Use_Case_Guide.pdf](./StudyVault_User_and_Use_Case_Guide.pdf)**  
 
 ---
 

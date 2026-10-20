@@ -29,3 +29,5 @@ instance/
 
 # Antigravity artifacts
 .gemini/
+
+.vercel
